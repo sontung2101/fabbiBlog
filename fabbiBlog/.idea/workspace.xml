@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2523f489-3261-4310-93e3-3dd7adcd632e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fabbiBlog/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/fabbiBlog/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,7 +28,7 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="E:/fbtranning/fbtraining" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
@@ -80,7 +80,7 @@
       <updated>1586864053188</updated>
       <workItem from="1586864083881" duration="2528000" />
       <workItem from="1586866662665" duration="162000" />
-      <workItem from="1586866840775" duration="62000" />
+      <workItem from="1586866840775" duration="1594000" />
     </task>
     <servers />
   </component>
