@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from post.models import *
+from home.models import *
 from faker import Faker
 from faker.generator import random
 from django.utils import timezone

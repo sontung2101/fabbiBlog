@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('content', models.CharField(blank=True, max_length=500, null=True)),
                 ('is_active', models.BooleanField(blank=True, default=True, null=True)),
                 ('is_deleted', models.BooleanField(blank=True, default=False, null=True)),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='post.PostModel')),
+                ('home', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='home.PostModel')),
             ],
             options={
                 'verbose_name': 'Post Details',
