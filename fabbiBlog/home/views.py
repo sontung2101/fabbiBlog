@@ -11,8 +11,8 @@ def post(request):
 
 
 def login(requset):
-    return render(requset, 'admin/login.html')
+    return render(requset, 'adminBlog/login.html')
 
 
 def register(requset):
-    return render(requset, 'admin/register.html')
+    return render(requset, 'adminBlog/register.html')

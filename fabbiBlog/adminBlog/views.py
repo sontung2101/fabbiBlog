@@ -3,12 +3,12 @@ from django.shortcuts import render
 
 # Create your views here.
 def login(request):
-    return render(request, 'admin/login.html')
+    return render(request, 'adminBlog/login.html')
 
 
 def register(request):
-    return render(request, 'admin/register.html')
+    return render(request, 'adminBlog/register.html')
 
 
 def reset_password(request):
-    return render(request, 'admin/reset-password.html')
+    return render(request, 'adminBlog/reset-password.html')
