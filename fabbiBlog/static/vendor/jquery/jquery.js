@@ -1332,7 +1332,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 				rbuggyQSA.push( ":enabled", ":disabled" );
 			}
 
-			// Opera 10-11 does not throw on post-comma invalid pseudos
+			// Opera 10-11 does not throw on home-comma invalid pseudos
 			el.querySelectorAll("*,:x");
 			rbuggyQSA.push(",.*:");
 		});
@@ -3632,7 +3632,7 @@ jQuery.extend( {
 
 											// Support: Promises/A+ section 2.3.3.3.4.1
 											// https://promisesaplus.com/#point-61
-											// Ignore post-resolution exceptions
+											// Ignore home-resolution exceptions
 											if ( depth + 1 >= maxDepth ) {
 
 												// Only substitute handlers pass on context
@@ -9434,7 +9434,7 @@ jQuery.extend( {
 				transport.send( requestHeaders, done );
 			} catch ( e ) {
 
-				// Rethrow post-completion exceptions
+				// Rethrow home-completion exceptions
 				if ( completed ) {
 					throw e;
 				}
