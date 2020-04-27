@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,HttpResponse
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.urls import reverse_lazy
@@ -13,7 +13,7 @@ class Login(LoginView):
     def get(self, request, *args, **kwargs):
         if request.session.get_expiry_age() > 0:
             if request.user.is_authenticated:
-                return redirect('home:home')
+                return redirect('home:index')
             else:
                 logout(request)
         return super().get(request, *args, **kwargs)
@@ -30,7 +30,7 @@ class Login(LoginView):
         return render(self.request, self.template_name, {'form': form})
 
     def get_success_url(self):
-        self.success_url = reverse_lazy('exuser:dashboard')
+        self.success_url = reverse_lazy('home:index')
         return self.success_url
 
 

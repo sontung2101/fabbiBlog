@@ -35,7 +35,7 @@ class myUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
         color = random.choice(_const.AVA_COLORS)
-        return self._create_user(username, email, password, color_avatar=color, **extra_fields)
+        return self._create_user(email,username, password, color_avatar=color, **extra_fields)
 
 # Create your models here.
 class myUser(AbstractUser):
