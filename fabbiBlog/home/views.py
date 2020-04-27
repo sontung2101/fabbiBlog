@@ -8,11 +8,3 @@ def index(request):
 
 def post(request):
     return render(request, 'home/post.html')
-
-
-def login(requset):
-    return render(requset, 'adminBlog/login.html')
-
-
-def register(requset):
-    return render(requset, 'adminBlog/register.html')

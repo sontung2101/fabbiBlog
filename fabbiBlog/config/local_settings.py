@@ -1,6 +1,6 @@
 from config.default_settings import *
 
-# AUTH_USER_MODEL = "exuser.ExUser"
+AUTH_USER_MODEL = "adminBlog.myUser"
 
 # Django rest framework settings
 REST_FRAMEWORK = {
