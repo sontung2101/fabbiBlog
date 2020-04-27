@@ -3,11 +3,11 @@ from django.shortcuts import render, HttpResponse
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'home/index.html')
 
 
 def post(request):
-    return render(request, 'post.html')
+    return render(request, 'home/post.html')
 
 
 def login(requset):
