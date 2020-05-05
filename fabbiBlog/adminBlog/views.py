@@ -2,41 +2,43 @@ from django.shortcuts import render, redirect,HttpResponse
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.urls import reverse_lazy
-from adminBlog.forms import *
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from .models import *
+
 
 
 # Create your views here.
-class Login(LoginView):
-    form_class = AuthUserFrom
-    template_name = 'adminBlog/login.html'
+@api_view(['GET'])
+def Login(request):
+    pass
 
-    def get(self, request, *args, **kwargs):
-        if request.session.get_expiry_age() > 0:
-            if request.user.is_authenticated:
-                return redirect('home:index')
-            else:
-                logout(request)
-        return super().get(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        remember_me = form.cleaned_data['remember_me']
-        if remember_me:
-            self.request.session.set_expiry(60 * 60 * 24 * 30)
-        else:
-            self.request.session.set_expiry(0)
-        return super(Login, self).form_valid(form)
-
-    def form_invalid(self, form):
-        return render(self.request, self.template_name, {'form': form})
-
-    def get_success_url(self):
-        self.success_url = reverse_lazy('home:index')
-        return self.success_url
-
-
-def register(request):
-    return render(request, 'adminBlog/register.html')
+@api_view(['POST'])
+def createUser(request):
+    username = request.data.get('username')
+    email = request.data.get('email')
+    password = request.data.get('password')
+    errors = []
+    if len(password) < 6:
+        errors.append('Mật khẩu quá ngắn')
+    if myUser.objects.filter(email=email):
+        errors.append('Email đã tồn tại')
+    if myUser.objects.filter(username=username):
+        errors.append('Tên tài khoản đã tồn tại')
+    if username.strip() == '':
+        errors.append('Tên tài khoản không được trống')
+    if email.strip() == '':
+        errors.append('Email không được trống')
+    if len(errors) == 0:
+        myUser.objects.create_user(email=email,username=username, password=password)
+        return Response({'success': True})
+    else:
+        return Response({'success': False, 'errors': errors})
 
 
 def reset_password(request):
-    return render(request, 'adminBlog/reset-password.html')
+    pass
+@api_view(['GET','POST'])
+def hello(request):
+    return Response({'message':'Hello'})

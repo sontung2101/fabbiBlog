@@ -42,10 +42,14 @@ INSTALLED_APPS = [
     'djoser',
     'widget_tweaks',
     'adminBlog',
+    'corsheaders',
+
 ]
+CORS_ORIGIN_ALLOW_ALL = True
 FAKER_LOCALE = None     # settings.LANGUAGE_CODE is loaded
 FAKER_PROVIDERS = None  # faker.DEFAULT_PROVIDERS is loaded (all)
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
