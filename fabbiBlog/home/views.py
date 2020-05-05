@@ -12,8 +12,8 @@ def index(request):
 
 def post(request):
     url = ""
-    data = requests.get(url).json()
-    comments = requests.get(url).json()
+    data = requests.get(url+"/"+id).json()
+    comments = requests.get(url+"/"+id).json()
     if request.method == "POST":
         if "add_comment" in request.POST:
             content = request.POST["content"]
