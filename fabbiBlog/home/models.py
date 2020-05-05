@@ -19,8 +19,8 @@ class PostModel(models.Model):
 
 
 class CommentsModel(models.Model):
-    comment = models.CharField(max_length=255, null=True, blank=True)
-    coment_date = models.DateTimeField(auto_now_add=True)
+    content = models.CharField(max_length=255, null=True, blank=True)
+    comment_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(null=True, blank=True, default=True)
     is_deleted = models.BooleanField(null=True, blank=True, default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
