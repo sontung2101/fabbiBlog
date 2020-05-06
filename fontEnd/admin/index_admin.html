@@ -1,0 +1,15 @@
+<script>
+    if (!sessionStorage.getItem('token')) {
+      location.href = 'login.html';
+    }
+  
+    function logOut() {
+      sessionStorage.removeItem('token');
+      location.href = 'login.html';
+    }
+  </script>
+  
+<h1>Index Admin</h1>
+<a class="dropdown-item" href="#" onclick="logOut()">
+    Đăng xuất
+</a>
