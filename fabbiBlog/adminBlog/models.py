@@ -35,7 +35,8 @@ class myUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
         color = random.choice(_const.AVA_COLORS)
-        return self._create_user(email,username, password, color_avatar=color, **extra_fields)
+        return self._create_user(email, username, password, color_avatar=color, **extra_fields)
+
 
 # Create your models here.
 class myUser(AbstractUser):
@@ -59,6 +60,7 @@ class myUser(AbstractUser):
     def __unicode__(self):
         return self.email
 
+
 class UserProfile(models.Model):
     GENDERS = (
         (_const.OTHER, _const.OTHER),
@@ -67,9 +69,12 @@ class UserProfile(models.Model):
     )
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     address = models.CharField(max_length=255, blank=True)
-    photo = models.ImageField(upload_to='uploads', blank=True)
+    photo = models.ImageField(upload_to='userProfile', blank=True)
     gender = models.CharField(max_length=20, choices=GENDERS, default=_const.OTHER)
     phone = models.CharField(max_length=20, null=True, blank=True)
 
     class Meta:
         db_table = 'tbl_user_profile'
+
+    def __str__(self):
+        return str(self.user)

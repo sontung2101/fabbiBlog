@@ -2,6 +2,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import re
 from .models import *
+from home.models import *
+from .serializers import *
+
 
 # Create your views here.
 @api_view(['POST'])
@@ -21,11 +24,24 @@ def createUser(request):
     if len(password) < 6:
         errors.append('Mật khẩu quá ngắn')
     if len(errors) == 0:
-        myUser.objects.create_user(email=email,username=username, password=password)
+        myUser.objects.create_user(email=email, username=username, password=password)
         return Response({'success': True})
     else:
         return Response({'success': False, 'errors': errors})
 
+
+@api_view(['GET'])
+def getPostList(request):
+    lst = PostModel.objects.all()
+    serializers = PostSerializer(lst, many=True)
+    return Response(serializers.data)
+
+
+@api_view(['GET'])
+def getPost(request,id):
+    post = PostModel.objects.get(id=id)
+    serializers = PostSerializer(post)
+    return Response(serializers.data)
 
 def reset_password(request):
     pass

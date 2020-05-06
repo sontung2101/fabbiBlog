@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'adminBlog',
     'corsheaders',
+    'tinymce',
 
 ]
 CORS_ORIGIN_ALLOW_ALL = True
@@ -132,3 +133,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')  # Absolute path to the media directory

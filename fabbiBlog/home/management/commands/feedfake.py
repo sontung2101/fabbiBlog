@@ -16,12 +16,9 @@ class Command(BaseCommand):
         records = options['record']
         for _ in range(0, records):
             PostModel.objects.create(
-                post_title=fake.name(),
-                user_id='1',
+                title=fake.name(),
+                author_id='1',
                 content=fake.text(),
-            )
-        for _ in range(0, records):
-            CommentsModel.objects.create(
-                comment=fake.text(),
-                user_id='1',
+                thumbnail=fake.image_url(),
+
             )
