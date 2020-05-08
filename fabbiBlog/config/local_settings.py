@@ -1,14 +1,11 @@
 from config.default_settings import *
 
-# AUTH_USER_MODEL = "exuser.ExUser"
+AUTH_USER_MODEL = "adminBlog.myUser"
 
 # Django rest framework settings
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
