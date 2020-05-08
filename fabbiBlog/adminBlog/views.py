@@ -51,7 +51,6 @@ def updatePost(request):
 @api_view(['POST'])
 def createPost(requeset):
     errror={}
-
     serializers = PostSerializer(data=requeset.data)
     if serializers.is_valid():
         serializers.save()
