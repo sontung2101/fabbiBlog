@@ -41,10 +41,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'widget_tweaks',
+    'adminBlog',
+    'corsheaders',
+    'tinymce',
+
 ]
+CORS_ORIGIN_ALLOW_ALL = True
 FAKER_LOCALE = None     # settings.LANGUAGE_CODE is loaded
 FAKER_PROVIDERS = None  # faker.DEFAULT_PROVIDERS is loaded (all)
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -127,3 +133,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')  # Absolute path to the media directory

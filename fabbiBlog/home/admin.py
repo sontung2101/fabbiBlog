@@ -6,7 +6,7 @@ from .models import *
 
 class PostAdmin(admin.ModelAdmin):
     model = PostModel
-    list_display = ['post_title','is_active', 'is_deleted']
+    list_display = ['title','is_active', 'is_deleted']
     list_filter = ['is_active']
     search_fields = ['post_title']
     readonly_fields = ['is_active', 'is_deleted']
@@ -14,10 +14,11 @@ class PostAdmin(admin.ModelAdmin):
 
 class CommentsAdmin(admin.ModelAdmin):
     model = CommentsModel
-    list_display = ['comment', 'is_deleted', 'is_active']
+    list_display = ['content', 'is_deleted', 'is_active']
     list_filter = ['is_active']
-    search_fields = ['comment']
+    search_fields = ['content']
     readonly_fields = ['is_active', 'is_deleted']
 
+admin.site.register(CategoryModel)
 admin.site.register(PostModel, PostAdmin)
 admin.site.register(CommentsModel,CommentsAdmin)
