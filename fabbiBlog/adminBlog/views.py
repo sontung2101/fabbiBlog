@@ -38,10 +38,27 @@ def getPostList(request):
 
 
 @api_view(['GET'])
-def getPost(request,id):
+def getPost(request, id):
     post = PostModel.objects.get(id=id)
     serializers = PostSerializer(post)
     return Response(serializers.data)
+
+
+@api_view(['PUT'])
+def updatePost(request):
+    pass
+
+@api_view(['POST'])
+def createPost(requeset):
+    errror={}
+
+    serializers = PostSerializer(data=requeset.data)
+    if serializers.is_valid():
+        serializers.save()
+        return Response({"success":True})
+    else:
+        return Response({"success":False,"errors":serializers.errors})
+
 
 def reset_password(request):
     pass

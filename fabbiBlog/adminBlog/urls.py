@@ -6,4 +6,5 @@ urlpatterns = [
     path('reset_password', reset_password, name='reset_pasword'),
     path('get_post_list', getPostList, name='get-post-list'),
     path('get_post/<int:id>', getPost, name='get-post'),
+    path('create_post', createPost, name='create-post'),
 ]
