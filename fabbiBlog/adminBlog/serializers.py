@@ -11,7 +11,7 @@ class CategorySerializer(ModelSerializer):
 
 
 class PostSerializer(ModelSerializer):
-    categories = CategorySerializer(many=True,read_only=True)
+    categories = CategorySerializer(many=True, read_only=True)
     class Meta:
         model = PostModel
         fields = '__all__'
