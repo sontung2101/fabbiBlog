@@ -22,7 +22,7 @@ class PostModel(models.Model):
     title = models.CharField(max_length=100, unique=True)
     sapo = models.CharField(max_length=200,blank=True)
     content = HTMLField()
-    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE,related_name='author')
     thumbnail = models.ImageField(upload_to='uploads', blank=False)
     categories = models.ManyToManyField(CategoryModel)
     is_active = models.BooleanField(null=True, blank=True, default=True)

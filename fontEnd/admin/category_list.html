@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-
-    <script>
-      tinymce.init({
-        selector: '#mytextarea'
-      });
-    </script>
-
-  </head>
-
-  <body>
-  <h1>TinyMCE Quick Start Guide</h1>
-    <form method="post">
-      <textarea id="mytextarea">Hello, World!</textarea>
-    </form>
+<html>
+	<head>
+		<title>TinyMCE - Setup</title>
+	</head>
+	<body>
+    <div id='app'>
+		<textarea class="tinymce" v-model="content"></textarea>
+    </div>
+		<!-- javascript -->
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="plugin/tinymce/tinymce.min.js"></script>
+		<script type="text/javascript" src="plugin/tinymce/init-tinymce.js"></script>
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    new Vue({
+      el:"#app",
+      data:{
+        content:"hello,world",
+      }
+
+    })
+  </script>
 </html>

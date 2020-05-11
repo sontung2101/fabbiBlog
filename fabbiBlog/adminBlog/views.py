@@ -38,10 +38,37 @@ def getPostList(request):
 
 
 @api_view(['GET'])
-def getPost(request,id):
+def getPost(request, id):
     post = PostModel.objects.get(id=id)
     serializers = PostSerializer(post)
     return Response(serializers.data)
 
+
+@api_view(['PUT'])
+def updatePost(request,id):
+    post = PostModel.objects.get(id=id)
+    serializer = PostSerializer(data=request.data, instance=post)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'success': True})
+    else:
+        return Response({'success': False, 'errors': serializer.errors})
+
+
+@api_view(['POST'])
+def createPost(requeset):
+    print(requeset.data)
+    serializers = PostSerializer(data=requeset.data)
+    if serializers.is_valid():
+        serializers.save()
+        return Response({"success":True})
+    else:
+        return Response({"success":False,"errors":serializers.errors})
+
+@api_view(['GET'])
+def getAllCategories(request):
+    categories = CategoryModel.objects.all()
+    serializer = CategorySerializer(categories,many=True)
+    return Response(serializer.data)
 def reset_password(request):
     pass

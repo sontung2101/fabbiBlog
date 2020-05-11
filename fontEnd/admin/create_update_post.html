@@ -37,35 +37,46 @@
     location.href = 'login.html';
   }
 </script>
-<div id='app' class="mt-3 container">
-  <template>
+
+<!-- javascript -->
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="plugin/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="plugin/tinymce/init-tinymce.js"></script>
+<div id='app' class="container">
     <form id='fmt'>
       <table class="table">
         <tr>
-            <th>Tiêu đề:</th>
-            <td><input class="form-control" v-model="posts.body.title" name="title"></td>
+          <th>Tác giả :</th>
+          <th><input class="form-control" name = "author" v-model='posts.author' ></th>
         </tr>
         <tr>
-            <th>Miêu tả:</th>
-            <td><input class="form-control" v-model="posts.body.sapo" name="sapo"></td>
+          <th>Tiêu đề:</th>
+          <td><input class="form-control" v-model='posts.body.title'  name="title"></td>
         </tr>
         <tr>
-            <th>Nội dung:</th>
-            <td><input class="form-control" v-model="posts.body.content" name="content"></td>
+          <th>Miêu tả:</th>
+          <td><input class="form-control" v-model='posts.body.sapo'  name="sapo"></td>
         </tr>
         <tr>
-            <th>Nhóm bài viết:</th>
-            <td v-for='c in posts.body.categories'><input class="form-control" v-model="c.title" name="categories"></td><br>
+          <th>Hình ảnh nền:</th>
+
+          <td><img :src="API_URL + posts.body.thumbnail" style="width: 100px;"><br>
+             <input class="mt-2" id='image' type="file" @change="updateImage($event)"></td>
         </tr>
         <tr>
-            <th>Ảnh:</th>
-            <td><input class="form-control" v-model="posts.body.thumbnail" name="thumbnail"></td>
+          <th>nhóm bài viết:</th>
+          <td><input class="form-control" v-model='posts.body.categories'  name="categories"></td>
         </tr>
       </table>
+      <div>
+      <h3>Nội dung</h3>
+      <textarea class="tinymce" v-model="posts.body.content" name="content"></textarea>
+      </div>
+      <div class="mt-3">
       <a class='btn btn-secondary' href='index_admin.html'>Quay lại</a>
       <button v-on:click='save()' class="btn btn-primary" type="button">Lưu lại</button>
+    </div>
     </form>
-  </template>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
@@ -73,8 +84,17 @@
   new Vue({
     el: '#app',
     data: {
-        id : null,
-        posts: {},
+        id:null,
+        author:"1",
+        posts: {
+          body:{
+            categories:"",
+            content:"",
+            sapo:"",
+            thumbnail:"",
+            title:"",
+          }
+        },
         API_URL :'http://localhost:8000'
         },
     created: async function() {
@@ -103,24 +123,29 @@
             });
             return resp.json();
       },
+        updateImage : function(ev) {
+              this.image = ev.target.files[0];
+      },
+
         save: async function () {
             var result = {};
 
             if(this.id) {
-            var body = JSON.stringify(this.category);
-            result = await 
-                        this.put(this.API_URL+'root/update_post/'+this.id, body);
+            var body = JSON.stringify(this.posts);
+            result = await this.put(this.API_URL+'root/update_post/'+this.id, body);
             }else{
             var fmt = document.getElementById('fmt');
             result = await this.post(this.API_URL+'/root/create_post',new FormData(fmt));
             }
-            
             if (result.success) {
             location.href = 'index_admin.html';
             } else {
             alert('Lỗi xảy ra khi ghi dữ liệu');
             }
         },
+      createUpdatePost: async function(){
+
+      }
 
     }
   })
