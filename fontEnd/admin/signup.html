@@ -1,18 +1,25 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 <style>
+  .bg-signup {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    /* color: #fff; */
+  }
+
   .signup-form {
     border: 1px solid #DDD;
     max-width: 400px;
     padding: 20px;
-    margin: 50 auto 0 auto;
+    margin: 150 auto 0 auto;
   }
+
 </style>
 <div id='app' class="signup-form">
   <template>
     <div class="form-group">
-      <ul>
-        <li v-for='error in errors'>{{ error }}</li>
-      </ul>
+      <h3>Đăng ký tài khoản</h3>
+    <br>
       <label>Tên tài khoản:</label>
       <input class="form-control" v-model="username">
     </div>
@@ -28,8 +35,15 @@
       <label>Mật khẩu xác thực:</label>
       <input class="form-control" type="password" v-model="password2">
     </div>
-    <button class="btn btn-primary" type="button" v-on:click="signUp()">Đăng ký</button>
-    <a class="btn btn-secondary" href='login.html'>Đăng nhập tài khoản</a>
+    <ul>
+      <li v-for='error in errors'>{{ error }}</li>
+    </ul>
+    <div>
+    <button class="btn btn-primary" type="button" v-on:click="signUp()" style="width: 100%;">Đăng ký</button>
+  </div>
+  <div class="mt-3">
+    <p class="text-left"><a href="login.html">Đăng nhập tài khoản</a></p>
+  </div>
   </template>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

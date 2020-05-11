@@ -47,7 +47,7 @@
       <table class="table">
         <tr>
           <th>Tác giả :</th>
-          <th><input class="form-control" name = "author" v-model='posts.author' ></th>
+          <th><p class="form-control" style="color: blue;">username</p></th>
         </tr>
         <tr>
           <th>Tiêu đề:</th>
@@ -61,16 +61,23 @@
           <th>Hình ảnh nền:</th>
 
           <td><img :src="API_URL + posts.body.thumbnail" style="width: 100px;"><br>
-             <input class="mt-2" id='image' type="file" @change="updateImage($event)"></td>
+             <input class="mt-2" id='image' type="file" @change="updateImage($event)" name="thumbnail"></td>
         </tr>
         <tr>
           <th>nhóm bài viết:</th>
-          <td><input class="form-control" v-model='posts.body.categories'  name="categories"></td>
+          <!-- <td><input class="form-control" v-model='posts.body.categories'  name="categories"></td> -->
+          <td>
+            <select v-model='selected' multiple class="form-control">
+              <option v-for="c in cate.body" style="width: 150px;"  v-bind:value="c.id" >{{c.title}}</option>
+           </select>
+           
+           {{selected}}
+          </td>
         </tr>
       </table>
       <div>
       <h3>Nội dung</h3>
-      <textarea class="tinymce" v-model="posts.body.content" name="content"></textarea>
+      <textarea class="tinymce" v-model="posts.body.content" id='texteditor'></textarea>
       </div>
       <div class="mt-3">
       <a class='btn btn-secondary' href='index_admin.html'>Quay lại</a>
@@ -84,10 +91,12 @@
   new Vue({
     el: '#app',
     data: {
+        selected:[],
         id:null,
-        author:"1",
+        cate:[],
         posts: {
           body:{
+            author:"",
             categories:"",
             content:"",
             sapo:"",
@@ -105,6 +114,10 @@
         var resp = await fetch(this.API_URL + "/root/get_post/"+this.id);
         this.posts = await resp.json();
         console.log(this.posts)
+      }else{
+        var resp = await fetch(this.API_URL+"/root/get_all_categories");
+        this.cate = await resp.json();
+        console.log(this.cate)
       }
     },
     methods: {
@@ -126,27 +139,31 @@
         updateImage : function(ev) {
               this.image = ev.target.files[0];
       },
-
         save: async function () {
             var result = {};
 
             if(this.id) {
             var body = JSON.stringify(this.posts);
-            result = await this.put(this.API_URL+'root/update_post/'+this.id, body);
+            console.log(body);
+            result = await this.put(this.API_URL+'/root/update_post/'+this.id, body);
             }else{
             var fmt = document.getElementById('fmt');
-            result = await this.post(this.API_URL+'/root/create_post',new FormData(fmt));
+            var data = new FormData(fmt)
+            var content = tinymce.get("texteditor").getContent();
+            data.append("content",content);
+            data.append("author",'1')
+            // alert(content);
+            console.log(fmt);
+            result = await this.post(this.API_URL+'/root/create_post',data);
+            console.log(result)
             }
             if (result.success) {
             location.href = 'index_admin.html';
+            alert("update TC")
             } else {
             alert('Lỗi xảy ra khi ghi dữ liệu');
             }
         },
-      createUpdatePost: async function(){
-
-      }
-
     }
   })
 </script>
