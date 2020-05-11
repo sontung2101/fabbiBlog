@@ -1,26 +1,49 @@
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.css">
+
 <style>
+  .bg-login {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+  }
+
   .login-form {
     border: 1px solid #DDD;
     max-width: 400px;
     padding: 20px;
-    margin: 50 auto 0 auto;
+    margin: 150 auto 0 auto;
   }
 </style>
-<div id='app' class="login-form">
-  <div class="form-group">
-    <label>Email:</label>
-    <input class="form-control" v-model="email">
+
+<div id="app" class="bg-login">
+  <div class="login-form">
+    <h3>Đăng nhập</h3>
+    <br>
+    <form @submit.prevent="logIn()">
+      <div class="form-group">
+        <label>Email</label>
+        <input v-model="email" type="text" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label>Mật khẩu</label>
+        <input v-model="password" type="password" class="form-control" />
+      </div>
+      <div class="form-group">
+        <span id="error" style="color:red"></span>
+      </div>
+      <br>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+      </div>
+      <div class="clearfix">
+        <a href="#" class="float-right">Quên mật khẩu?</a>
+      </div>
+    </form>
+    <p class="text-center"><a href="signup.html">Đăng ký tài khoản</a></p>
   </div>
-  <div class="form-group">
-    <label>Mật khẩu:</label>
-    <input class="form-control" type="password" v-model="password">
-  </div>
-  <button class="btn btn-primary" type="button" v-on:click="logIn()">
-    Đăng nhập
-  </button>
-  <a class="btn btn-secondary" href='signup.html'>Đăng ký tài khoản</a>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
   new Vue({
@@ -46,7 +69,7 @@
           alert('Email và mật khẩu không được để trống');
         }
         else {
-          alert('Email hoặc mật khẩu không đúng');
+          alert('Email hoặc mật khẩu không chính xác');
         }
       }
     }
