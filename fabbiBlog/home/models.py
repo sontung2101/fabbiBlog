@@ -4,10 +4,6 @@ from adminBlog.models import *
 from tinymce.models import HTMLField
 from adminBlog.models import *
 
-
-# Create your models here.
-# Create your models here.
-
 class CategoryModel(models.Model):
     title = models.CharField(max_length=50)
 

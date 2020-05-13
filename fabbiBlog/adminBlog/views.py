@@ -4,6 +4,8 @@ import re
 from .models import *
 from home.models import *
 from .serializers import *
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
@@ -32,20 +34,21 @@ def createUser(request):
 
 @api_view(['GET'])
 def getPostList(request):
+    print(request.user)
     lst = PostModel.objects.all()
-    serializers = PostSerializer(lst, many=True)
+    serializers = GetAllPostSerializer(lst, many=True)
     return Response(serializers.data)
 
 
 @api_view(['GET'])
 def getPost(request, id):
     post = PostModel.objects.get(id=id)
-    serializers = PostSerializer(post)
+    serializers = GetPostSerializer(post)
     return Response(serializers.data)
 
 
 @api_view(['PUT'])
-def updatePost(request,id):
+def updatePost(request, id):
     post = PostModel.objects.get(id=id)
     serializer = PostSerializer(data=request.data, instance=post)
     if serializer.is_valid():
@@ -57,18 +60,51 @@ def updatePost(request,id):
 
 @api_view(['POST'])
 def createPost(requeset):
-    print(requeset.data)
     serializers = PostSerializer(data=requeset.data)
     if serializers.is_valid():
         serializers.save()
-        return Response({"success":True})
+        return Response({"success": True})
     else:
-        return Response({"success":False,"errors":serializers.errors})
+        return Response({"success": False, "errors": serializers.errors})
+
 
 @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
 def getAllCategories(request):
     categories = CategoryModel.objects.all()
-    serializer = CategorySerializer(categories,many=True)
+    serializer = CategorySerializer(categories, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUser(request):
+    id = request.user.id
+    author = UserProfile.objects.get(user_id=id)
+    if author:
+        data = {
+            'author_id': author.id,
+            'author_name': request.user.username
+        }
+        return Response(data)
+    else:
+        return Response({"success": False})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getAuthor(request, id):
+    author = UserProfile.objects.get(id=id)
+    if author:
+        myUserId = author.user_id
+        author_name = myUser.objects.get(id=myUserId)
+        data = {
+            'author_name': author_name.username
+        }
+        return Response(data)
+    else:
+        return Response({'success': False})
+
+
 def reset_password(request):
     pass

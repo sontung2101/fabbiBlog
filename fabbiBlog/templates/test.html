@@ -72,6 +72,7 @@
                     <select v-model='selected' multiple class="form-control">
                       <option v-for="c in cate.body" style="width: 150px;" v-bind:value="c.id" >{{ c.title }}</option>
                   </select>
+                  {{selected}}
 
                 </td>
             </tr>
@@ -96,7 +97,6 @@
             id: null,
             cate: [],
             author_name: "",
-            updata_thumbnail:"",
             posts: {
                 body: {
                     author: "",
@@ -110,14 +110,15 @@
             API_URL: 'http://localhost:8000'
         },
         created: async function () {
+            var resp = await fetch(this.API_URL + "/root/get_all_categories");
+            this.cate = await resp.json();
+            console.log(this.cate)
+
             var pos = location.href.indexOf('?id=');
             this.id = (pos > 0) ? location.href.substring(pos + 4) : null;
             if (this.id) {
                 var resp = await fetch(this.API_URL + "/root/get_post/" + this.id);
                 this.posts = await resp.json();
-
-                var resp = await fetch(this.API_URL + "/root/get_all_categories");
-                this.cate = await resp.json();
 
                 var author = await fetch(this.API_URL+ "/root/get_author/" + this.posts.body.author,
                 {
@@ -129,12 +130,9 @@
                 )
                 var author = await author.json();
                 this.author_name = author.body.author_name
-                this.selected = this.posts.body.categories
                 console.log(this.posts)
+                this.selected = this.posts.body.categories
             } else {
-                var resp = await fetch(this.API_URL + "/root/get_all_categories");
-                this.cate = await resp.json();
-                console.log(this.cate)
                 var user = await fetch(this.API_URL + "/root/get_user",
                     {
                         headers: {
@@ -171,30 +169,22 @@
                 return resp.json();
             },
             updateImage: function (ev) {
-                this.updata_thumbnail = ev.target.files[0];
+                this.image = ev.target.files[0];
             },
             save: async function () {
                 var result = {};
 
                 if (this.id) {
-                  var content = tinymce.get("texteditor").getContent();
-                  this.posts.body.content = content
-                  this.posts.body.categories = this.selected
-                  if (this.updata_thumbnail){
-                    this.posts.body.thumbnail = this.updata_thumbnail
-                    
-                  }
-                  console.log(this.posts.body.thumbnail)
-                  console.log(this.posts.body)
-                  var body = JSON.stringify(this.posts.body);
-                  console.log(body)
-                  result = await this.put(this.API_URL + '/root/update_post/' + this.id, body);
+                    var body = JSON.stringify(this.posts);
+                    console.log(body);
+                    result = await this.put(this.API_URL + '/root/update_post/' + this.id, body);
                 } else {
                     var fmt = document.getElementById('fmt');
                     var data = new FormData(fmt)
                     var content = tinymce.get("texteditor").getContent();
                     data.append("content", content);
                     data.append("author", this.author);
+                    // alert(this.selected);
                     data.append("categories", this.selected);
                     console.log(fmt);
                     result = await this.post(this.API_URL + '/root/create_post', data);
