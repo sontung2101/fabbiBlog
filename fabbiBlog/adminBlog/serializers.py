@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 from home.models import *
-
+import json
 
 class CategorySerializer(ModelSerializer):
     class Meta:
@@ -49,12 +49,16 @@ class PostSerializer(ModelSerializer):
             posts.categories.add(cate)
         return posts
 
+    #
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
-        instance.author = validated_data.get('author',instance.author)
-        instance.categories = validated_data.get('categories',instance.categories)
-        instance.sapo = validated_data.get('sapo',instance.sapo)
-        instance.content = validated_data.get('content',instance.content)
-        instance.thumbnail = validated_data.get('thumbnail',instance.thumbnail)
-
+        instance.author = validated_data.get('author', instance.author)
+        instance.sapo = validated_data.get('sapo', instance.sapo)
+        instance.content = validated_data.get('content', instance.content)
+        instance.thumbnail = validated_data.get('thumbnail', instance.thumbnail)
+        instance.save()
+        categories = validated_data.get('categories')
+        categories = categories.split(',')
+        for cate_id in categories:
+            instance.categories.add(CategoryModel.objects.get(id=cate_id))
         return instance

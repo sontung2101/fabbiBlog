@@ -50,7 +50,9 @@ def getPost(request, id):
 @api_view(['PUT'])
 def updatePost(request, id):
     post = PostModel.objects.get(id=id)
-    serializer = PostSerializer(data=request.data, instance=post)
+    if request.data['categories'] is not None:
+        post.categories.clear()
+    serializer = PostSerializer(data=request.data, instance=post,partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response({'success': True})
