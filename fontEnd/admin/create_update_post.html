@@ -143,7 +143,6 @@
                         }
                     });
                 var user = await user.json();
-                console.log(user)
                 if (!user.body.author_id) {
                     alert('Chưa điền đủ thông tin cá nhân');
                     location.href = 'index_admin.html';
@@ -163,10 +162,14 @@
                 return resp.json();
             },
             put: async function (url, body) {
+                for(var pair of body.entries()) {
+                    console.log(pair[0]+ ', '+ pair[1]); 
+                }
                 var resp = await fetch(url, {
                     method: 'PUT',
                     body: body,
-                    headers: {"Content-Type": "application/json"}
+                    headers: {'Authorization': 'Bearer '
+                                + sessionStorage.getItem('token')}
                 });
                 return resp.json();
             },
@@ -175,33 +178,21 @@
             },
             save: async function () {
                 var result = {};
-
-                if (this.id) {
-                  var content = tinymce.get("texteditor").getContent();
-                  this.posts.body.content = content
-                  this.posts.body.categories = this.selected
-                  if (this.updata_thumbnail){
-                    this.posts.body.thumbnail = this.updata_thumbnail
-                    
-                  }
-                  console.log(this.posts.body.thumbnail)
-                  console.log(this.posts.body)
-                  var body = JSON.stringify(this.posts.body);
-                  console.log(body)
-                  result = await this.put(this.API_URL + '/root/update_post/' + this.id, body);
-                } else {
-                    var fmt = document.getElementById('fmt');
+                var fmt = document.getElementById('fmt');
                     var data = new FormData(fmt)
                     var content = tinymce.get("texteditor").getContent();
                     data.append("content", content);
-                    data.append("author", this.author);
                     data.append("categories", this.selected);
-                    console.log(fmt);
+                if (this.id) {
+                    data.append("author", this.posts.body.author);
+                    result = await this.put(this.API_URL + '/root/update_post/' + this.id, data);
+                } else {
+                    data.append("author", this.author);
                     result = await this.post(this.API_URL + '/root/create_post', data);
                     console.log(result)
                 }
                 if (result.body.success) {
-                    // location.href = 'index_admin.html';
+                    location.href = 'index_admin.html';
                     alert("update TC")
                 } else {
                     alert('Lỗi xảy ra khi ghi dữ liệu');

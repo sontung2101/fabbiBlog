@@ -11,4 +11,5 @@ urlpatterns = [
     path('get_all_categories',getAllCategories,name='get-all-categories'),
     path('get_user',getUser,name='get-user'),
     path('get_author/<int:id>',getAuthor,name='get-author'),
+    path('delete_post/<int:id>',deletePost,name='delete-post'),
 ]

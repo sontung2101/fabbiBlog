@@ -34,7 +34,6 @@ def createUser(request):
 
 @api_view(['GET'])
 def getPostList(request):
-    print(request.user)
     lst = PostModel.objects.all()
     serializers = GetAllPostSerializer(lst, many=True)
     return Response(serializers.data)
@@ -52,7 +51,7 @@ def updatePost(request, id):
     post = PostModel.objects.get(id=id)
     if request.data['categories'] is not None:
         post.categories.clear()
-    serializer = PostSerializer(data=request.data, instance=post,partial=True)
+    serializer = PostSerializer(data=request.data, instance=post, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response({'success': True})
@@ -106,6 +105,13 @@ def getAuthor(request, id):
         return Response(data)
     else:
         return Response({'success': False})
+
+
+@api_view(['DELETE'])
+def deletePost(request, id):
+    post = PostModel.objects.get(id=id)
+    post.delete()
+    return Response({'success': True})
 
 
 def reset_password(request):
