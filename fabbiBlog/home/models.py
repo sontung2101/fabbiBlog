@@ -5,7 +5,7 @@ from tinymce.models import HTMLField
 from adminBlog.models import *
 
 class CategoryModel(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, unique=True)
 
     class Meta:
         verbose_name = 'Category'

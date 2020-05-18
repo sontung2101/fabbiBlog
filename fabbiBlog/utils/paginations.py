@@ -4,13 +4,13 @@ from django.core.paginator import InvalidPage
 from rest_framework import pagination
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
-
+from collections import OrderedDict
 from utils.error import PageNotFound
 
 
 class CustomPagination(pagination.LimitOffsetPagination):
-    default_limit = 10
-    max_limit = 100
+    default_limit = 4
+    max_limit = 10
 
     def get_paginated_response(self, data):
         total_page = math.ceil(self.count / self.limit)
@@ -26,15 +26,16 @@ class CustomPagination(pagination.LimitOffsetPagination):
 
 
 class CustomPagination2(pagination.PageNumberPagination):
-    page_size = 20
+    page_size = 4
 
     def get_paginated_response(self, data):
         return Response({
             'links': {
-                'prev': self.get_previous_link(),
+                'previous': self.get_previous_link(),
                 'next': self.get_next_link(),
-                'count': self.page.paginator.per_page,
-                'total_record': self.page.paginator.count,
+                'count': self.page.paginator.count,
+                'page':self.page.number,
+                'num_page':self.page.paginator.num_pages,
             },
             'data': data
         })

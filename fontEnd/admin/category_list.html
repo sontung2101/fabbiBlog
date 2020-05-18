@@ -1,25 +1,103 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>TinyMCE - Setup</title>
-	</head>
-	<body>
-    <div id='app'>
-		<textarea class="tinymce" v-model="content"></textarea>
-    </div>
-		<!-- javascript -->
-		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="plugin/tinymce/tinymce.min.js"></script>
-		<script type="text/javascript" src="plugin/tinymce/init-tinymce.js"></script>
-  </body>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script>
-    new Vue({
-      el:"#app",
-      data:{
-        content:"hello,world",
-      }
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-    })
-  </script>
-</html>
+<nav class="navbar navbar-expand-lg navbar-dark p-0" style="background-color: #1f282dd9">
+  <div class="navbar-nav">
+    <a class="nav-item nav-link" href="index_admin.html">Quản lý bài viết</a>
+    <a class="nav-item nav-link active" href="category_list.html">Quản lý nhóm bài viết</a>
+  </div>
+
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item dropdown no-arrow">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+        <img class="rounded-circle" style="width:60px" src="user.svg">
+      </a>
+      <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" href="#">
+          Thông tin tài khoản
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="logOut()">
+          Đăng xuất
+        </a>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<script>
+  if (!sessionStorage.getItem('token')) {
+    location.href = 'login.html';
+  }
+
+  function logOut() {
+    sessionStorage.removeItem('token');
+    location.href = 'login.html';
+  }
+</script>
+
+<div id='app' class="mt-3 container">
+  <template>
+    <a class="btn btn-primary" style="margin-bottom: 5px;" href="create_update_category.html">
+      Thêm nhóm bài viết
+    </a>
+    <table class="table table-bordered">
+      <tr>
+        <th class="text-center" style="width: 10%;">STT</th>
+        <th class="text-center" style="width: 30%;">Mã</th>
+        <th class="text-center" style="width: 30%;">Tên</th>
+        <th class="text-center" style="width: 20%;"></th>
+      </tr>
+      <tr v-for='(c,i) in categories.body'>
+        <td class="text-center">{{i+1}}</td>
+        <td class="text-center">CT000{{c.id}}</td>
+        <td class="text-center">{{c.title}}</td>
+        <td class="text-center">
+          <a class="btn btn-sm btn-primary" 
+              :href='"create_update_category.html?id=" + c.id'>Chỉnh sửa</a>
+          <a class="btn btn-sm btn-danger" v-on:click="deleteCategory(c.id)" href='#'>Xóa</a>
+        </td>
+      </tr>
+    </table>
+  </template>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<script>
+
+  new Vue({
+    el: '#app',
+    data: { 
+    categories: [],
+    API_URL :'http://localhost:8000',
+   },
+
+    methods: {
+      deleteCategory: async function(id) {
+        if(confirm("Bạn có thực sự muốn xóa !")){
+        var resp = await fetch(this.API_URL+'/root/delete_category/'+id,
+                                    {method: 'DELETE'});
+        var result = await resp.json();
+        if(result.body.success){
+          location.href = 'category_list.html';
+          alert('Xóa Thành công');
+        }else {
+          alert('Lỗi khi xóa.');
+        }
+      };
+      }
+    },
+
+    created: async function () {
+      var resp = await fetch(this.API_URL +'/root/get_all_categories',
+            {
+              headers: {'Authorization': 'Bearer ' 
+                            + sessionStorage.getItem('token')}
+            });
+      this.categories = await resp.json();
+      console.log(this.categories);
+    }
+  })
+</script>

@@ -1,1 +1,126 @@
-<h1>create and update category</h1>
+<!--create_update_category.html-->
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<nav class="navbar navbar-expand-lg navbar-dark p-0" style="background-color: #1f282dd9">
+    <div class="navbar-nav">
+        <a class="nav-item nav-link" href="index_admin.html">Quản lý bài viết</a>
+        <a class="nav-item nav-link active" href="category_list.html">Quản lý nhóm bài viết</a>
+    </div>
+
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                <img class="rounded-circle" style="width:60px" src="user.svg">
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#">
+                    Thông tin tài khoản
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" onclick="logOut()">
+                    Đăng xuất
+                </a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<script>
+    if (!sessionStorage.getItem('token')) {
+        location.href = 'login.html';
+    }
+
+    function logOut() {
+        sessionStorage.removeItem('token');
+        location.href = 'login.html';
+    }
+</script>
+
+<div id='app' class="mt-3 container">
+    <template>
+        <form id='fmt' @submit.prevent="save()">
+            <table class="table">
+                <tr>
+                    <th>Tên nhóm bài viết:</th>
+                    <td><input class="form-control" v-model="category.body.title" name="title"></td>
+                </tr>
+            </table>
+            <a class='btn btn-secondary' href='category_list.html'>Quay lại</a>
+            <button  class="btn btn-primary" type="submit">Lưu lại</button>
+        </form>
+    </template>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            id: null,
+            category: {
+                body: {
+                    title: '',
+                }
+            },
+            API_URL: 'http://localhost:8000',
+        },
+        created: async function () {
+            var pos = location.href.indexOf('?id=');
+            this.id = (pos > 0) ? location.href.substring(pos + 4) : null;
+
+            if (this.id) {
+                var resp = await fetch(this.API_URL + "/root/get_category/" + this.id);
+                this.category = await resp.json();
+            }
+        },
+
+        methods: {
+            post: async function (url, formData) {
+                var resp = await fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Authorization': 'Bearer '
+                            + sessionStorage.getItem('token')
+                    },
+                });
+                return resp.json();
+            },
+            put: async function (url, body) {
+                var resp = await fetch(url, {
+                    method: 'PUT',
+                    body: body,
+                    headers: {
+                        'Authorization': 'Bearer '+ sessionStorage.getItem('token'),
+                        "Content-Type": "application/json",
+                    },
+                });
+                return resp.json();
+            },
+            save: async function () {
+                var result = {};
+
+                if (this.id) {
+                    var body = JSON.stringify(this.category.body);
+                    console.log(body)
+                    result = await this.put(this.API_URL + '/root/update_category/' + this.id,
+                            body);
+                    console.log(result);
+                } else {
+                    var fmt = document.getElementById('fmt');
+                    result = await this.post(this.API_URL + '/root/create_category',
+                        new FormData(fmt));
+                    console.log(result)
+                }
+                if (result.body.success) {
+                    alert('Thành công'),
+                        location.href = 'category_list.html';
+                } else {
+                    alert('Lỗi xảy ra khi ghi dữ liệu');
+                }
+            }
+        }
+    })
+</script>

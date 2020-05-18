@@ -38,165 +38,103 @@
     }
 </script>
 
-<!-- javascript -->
-<script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" src="plugin/tinymce/tinymce.min.js"></script>
-<script type="text/javascript" src="plugin/tinymce/init-tinymce.js"></script>
-<div id='app' class="container">
-    <form id='fmt'>
-        <table class="table">
-            <tr>
-                <th>Tác giả :</th>
-                <th><p class="form-control" style="color: blue;">{{ author_name }}</p></th>
+<div id='app' class="mt-3 container">
+    <template>
+        <a class="btn btn-primary" href="create_update_post.html" style="margin-bottom: 5px;">
+            Thêm bài viết
+        </a>
+        <table class="table table-bordered">
+            <tr class="text-center">
+                <th style="width: 10%;">STT</th>
+                <th style="width: 20%;">Tiêu đề</th>
+                <th style="width: 20%;">Miêu tả</th>
+                <th style="width: 10%;">Nhóm bài viết</th>
+                <th style="width: 20%;">Ảnh</th>
+                <th style="width: 20%;"></th>
             </tr>
-            <tr>
-                <th>Tiêu đề:</th>
-                <td><input class="form-control" v-model='posts.body.title' name="title"></td>
-            </tr>
-            <tr>
-                <th>Miêu tả:</th>
-                <td><input class="form-control" v-model='posts.body.sapo' name="sapo"></td>
-            </tr>
-            <tr>
-                <th>Hình ảnh nền:</th>
-
-                <td><img v-if="posts.body.thumbnail" :src="API_URL + posts.body.thumbnail" class="form"
-                         style="width: 100px;"><br v-if="posts.body.thumbnail">
-                    <input class="formData mt-3" id='image' type="file" @change="updateImage($event)" name="thumbnail">
-                </td>
-            </tr>
-            <tr>
-                <th>nhóm bài viết:</th>
-                <td>
-
-                    <select v-model='selected' multiple class="form-control">
-                      <option v-for="c in cate.body" style="width: 150px;" v-bind:value="c.id" >{{ c.title }}</option>
-                  </select>
-                  {{selected}}
-
+            <tr v-for='(p,i) in posts.body' class="text-center">
+                <td>{{ i+1}}</td>
+                <td>{{ p.title }}</td>
+                <td>{{ p.sapo }}</td>
+                <td><p v-for='c in p.categories'>{{ c.title }}</p></td>
+                <td><img :src="p.thumbnail" class="product-image" style="width: 200px;"/></td>
+                <td class="text-center" style="width: 200px;">
+                    <a class="btn btn-sm btn-primary" :href='"create_update_post.html?id=" + p.id'>Chỉnh sửa</a>
+                    <a class="btn btn-sm btn-danger" v-on:click="deleteCategory(p.id)" href='#'>Xóa</a>
                 </td>
             </tr>
         </table>
-        <div>
-            <h4>Nội dung :</h4>
-            <textarea class="tinymce" v-model="posts.body.content" id="texteditor"></textarea>
-        </div>
-        <div class="mt-3">
-            <a class='btn btn-secondary' href='index_admin.html'>Quay lại</a>
-            <button v-on:click='save()' class="btn btn-primary" type="button">Lưu lại</button>
-        </div>
-    </form>
+        <nav v-if="paging.num_page > 1 " aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </template>
+
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 <script>
     new Vue({
         el: '#app',
         data: {
-            selected: [],
-            id: null,
-            cate: [],
-            author_name: "",
-            posts: {
-                body: {
-                    author: "",
-                    categories: "",
-                    content: "",
-                    sapo: "",
-                    thumbnail: "",
-                    title: "",
-                }
+            posts: [],
+            API_URL: 'http://localhost:8000',
+            url_page: 'http://localhost:8000/root/get_post_list',
+            paging: {
+                previous: '',
+                next: '',
+                count: '',
+                page: '',
+                num_page: '',
             },
-            API_URL: 'http://localhost:8000'
         },
         created: async function () {
-            var resp = await fetch(this.API_URL + "/root/get_all_categories");
-            this.cate = await resp.json();
-            console.log(this.cate)
-
-            var pos = location.href.indexOf('?id=');
-            this.id = (pos > 0) ? location.href.substring(pos + 4) : null;
-            if (this.id) {
-                var resp = await fetch(this.API_URL + "/root/get_post/" + this.id);
-                this.posts = await resp.json();
-
-                var author = await fetch(this.API_URL+ "/root/get_author/" + this.posts.body.author,
-                {
-                        headers: {
-                            'Authorization': 'Bearer '
-                                + sessionStorage.getItem('token')
-                        }
-                    }
-                )
-                var author = await author.json();
-                this.author_name = author.body.author_name
-                console.log(this.posts)
-                this.selected = this.posts.body.categories
-            } else {
-                var user = await fetch(this.API_URL + "/root/get_user",
-                    {
-                        headers: {
-                            'Authorization': 'Bearer '
-                                + sessionStorage.getItem('token')
-                        }
-                    });
-                var user = await user.json();
-                console.log(user)
-                if (!user.body.author_id) {
-                    alert('Chưa điền đủ thông tin cá nhân');
-                    location.href = 'index_admin.html';
-                } else {
-                    this.author = user.body.author_id
-                    this.author_name = user.body.author_name
-
-                }
-            }
+            await this.getListPosts(this.url_page)
         },
         methods: {
-            post: async function (url, formData) {
-                var resp = await fetch(url, {
-                    method: 'POST',
-                    body: formData,
-                });
-                return resp.json();
+            getListPosts: async function (url) {
+                var resp = await fetch(url,
+                    {
+                        headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('token')}
+                    });
+                this.posts = await resp.json();
+                console.log(this.posts)
+                this.paging = this.posts.paging;
+                console.log(this.paging.num_page)
             },
-            put: async function (url, body) {
-                var resp = await fetch(url, {
-                    method: 'PUT',
-                    body: body,
-                    headers: {"Content-Type": "application/json"}
-                });
-                return resp.json();
-            },
-            updateImage: function (ev) {
-                this.image = ev.target.files[0];
-            },
-            save: async function () {
-                var result = {};
-
-                if (this.id) {
-                    var body = JSON.stringify(this.posts);
-                    console.log(body);
-                    result = await this.put(this.API_URL + '/root/update_post/' + this.id, body);
-                } else {
-                    var fmt = document.getElementById('fmt');
-                    var data = new FormData(fmt)
-                    var content = tinymce.get("texteditor").getContent();
-                    data.append("content", content);
-                    data.append("author", this.author);
-                    // alert(this.selected);
-                    data.append("categories", this.selected);
-                    console.log(fmt);
-                    result = await this.post(this.API_URL + '/root/create_post', data);
-                    console.log(result)
+            deleteCategory: async function (id) {
+                if (confirm("Bạn có thực sự muốn xóa !")) {
+                    var resp = await fetch(this.API_URL + '/root/delete_post/' + id,
+                        {method: 'DELETE'});
+                    var result = await resp.json();
+                    if (result.body.success) {
+                        location.href = 'index_admin.html';
+                        alert('Xóa Thành công')
+                    } else {
+                        alert('Lỗi khi xóa ');
+                    }
+                    ;
                 }
-                if (result.body.success) {
-                    // location.href = 'index_admin.html';
-                    alert("update TC")
-                } else {
-                    alert('Lỗi xảy ra khi ghi dữ liệu');
-                }
-            },
+                ;
+            }
         }
+
+
     })
 </script>

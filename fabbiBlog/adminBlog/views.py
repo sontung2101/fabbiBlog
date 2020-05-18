@@ -1,4 +1,6 @@
+from rest_framework import viewsets
 from rest_framework.decorators import api_view
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 import re
 from .models import *
@@ -6,6 +8,8 @@ from home.models import *
 from .serializers import *
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
+from utils import paginations
+from rest_framework.views import APIView
 
 
 # Create your views here.
@@ -31,12 +35,10 @@ def createUser(request):
     else:
         return Response({'success': False, 'errors': errors})
 
-
-@api_view(['GET'])
-def getPostList(request):
-    lst = PostModel.objects.all()
-    serializers = GetAllPostSerializer(lst, many=True)
-    return Response(serializers.data)
+class PostListAPIView(ListAPIView):
+    queryset = PostModel.objects.all().order_by('-created_at')
+    serializer_class = GetAllPostSerializer
+    pagination_class = paginations.CustomPagination2
 
 
 @api_view(['GET'])
@@ -116,3 +118,41 @@ def deletePost(request, id):
 
 def reset_password(request):
     pass
+
+
+# ------------------------------------Categories--------------------------------------------
+
+
+@api_view(['GET'])
+def getCategory(request, id):
+    category = CategoryModel.objects.get(id=id)
+    serializer = CategorySerializer(category)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def createCategory(request):
+    serializers = CategorySerializer(data=request.data)
+    if serializers.is_valid():
+        serializers.save()
+        return Response({'success': True})
+    else:
+        return Response({'success': False, 'errors': serializers.errors})
+
+
+@api_view(['PUT'])
+def updateCategory(request, id):
+    category = CategoryModel.objects.get(id=id)
+    serializer = CategorySerializer(data=request.data, instance=category)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'success': True})
+    else:
+        return Response({'success': False, 'errorrs': serializer.errors})
+
+
+@api_view(['DELETE'])
+def deleteCategory(request, id):
+    category = CategoryModel.objects.get(id=id)
+    category.delete()
+    return Response({'success': True})

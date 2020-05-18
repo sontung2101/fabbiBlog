@@ -22,7 +22,7 @@ REST_FRAMEWORK = {
     'TIME_FORMAT': '%H:%M:%S',
     'EXCEPTION_HANDLER': 'utils.error.custom_exception_handler',
     'DEFAULT_PAGINATION_CLASS': 'utils.paginations.CustomPagination',
-    'PAGE_SIZE': 100,
+    'PAGE_SIZE': 3,
 }
 
 #SIMPLE_JWT thay đổi formet gửi Authoiation -> JWT

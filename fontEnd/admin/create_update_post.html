@@ -70,8 +70,8 @@
                 <td>
 
                     <select v-model='selected' multiple class="form-control">
-                      <option v-for="c in cate.body" style="width: 150px;" v-bind:value="c.id" >{{ c.title }}</option>
-                  </select>
+                        <option v-for="c in cate.body" style="width: 150px;" v-bind:value="c.id">{{ c.title }}</option>
+                    </select>
 
                 </td>
             </tr>
@@ -96,7 +96,7 @@
             id: null,
             cate: [],
             author_name: "",
-            updata_thumbnail:"",
+            updata_thumbnail: "",
             posts: {
                 body: {
                     author: "",
@@ -119,8 +119,8 @@
                 var resp = await fetch(this.API_URL + "/root/get_all_categories");
                 this.cate = await resp.json();
 
-                var author = await fetch(this.API_URL+ "/root/get_author/" + this.posts.body.author,
-                {
+                var author = await fetch(this.API_URL + "/root/get_author/" + this.posts.body.author,
+                    {
                         headers: {
                             'Authorization': 'Bearer '
                                 + sessionStorage.getItem('token')
@@ -158,18 +158,24 @@
                 var resp = await fetch(url, {
                     method: 'POST',
                     body: formData,
+                    headers: {
+                        'Authorization': 'Bearer '
+                            + sessionStorage.getItem('token')
+                    },
                 });
                 return resp.json();
             },
             put: async function (url, body) {
-                for(var pair of body.entries()) {
-                    console.log(pair[0]+ ', '+ pair[1]); 
-                }
+                // for (var pair of body.entries()) {
+                //     console.log(pair[0] + ', ' + pair[1]);
+                // }
                 var resp = await fetch(url, {
                     method: 'PUT',
                     body: body,
-                    headers: {'Authorization': 'Bearer '
-                                + sessionStorage.getItem('token')}
+                    headers: {
+                        'Authorization': 'Bearer '
+                            + sessionStorage.getItem('token')
+                    }
                 });
                 return resp.json();
             },
@@ -179,10 +185,10 @@
             save: async function () {
                 var result = {};
                 var fmt = document.getElementById('fmt');
-                    var data = new FormData(fmt)
-                    var content = tinymce.get("texteditor").getContent();
-                    data.append("content", content);
-                    data.append("categories", this.selected);
+                var data = new FormData(fmt)
+                var content = tinymce.get("texteditor").getContent();
+                data.append("content", content);
+                data.append("categories", this.selected);
                 if (this.id) {
                     data.append("author", this.posts.body.author);
                     result = await this.put(this.API_URL + '/root/update_post/' + this.id, data);
@@ -193,7 +199,7 @@
                 }
                 if (result.body.success) {
                     location.href = 'index_admin.html';
-                    alert("update TC")
+                    alert("Thành công")
                 } else {
                     alert('Lỗi xảy ra khi ghi dữ liệu');
                 }
