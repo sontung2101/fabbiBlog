@@ -33,3 +33,8 @@ function delete_(uri){
     var url = BASE_URL + uri;
     return fetch(url,{method:'DELETE', headers:{Authorization:'Bearer '+ localStorage.getItem('token')},})
 }
+function getUser(){
+    var url = BASE_URL + "/get_user";
+    return fetch(url,{headers:{Authorization:'Bearer '+ localStorage.getItem('token')}}
+        );
+  }

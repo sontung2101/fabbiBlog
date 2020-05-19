@@ -4,30 +4,6 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-<nav class="navbar navbar-expand-lg navbar-dark p-0" style="background-color: #1f282dd9">
-    <div class="navbar-nav">
-        <a class="nav-item nav-link" href="index_admin.html">Quản lý bài viết</a>
-        <a class="nav-item nav-link active" href="category_list.html">Quản lý nhóm bài viết</a>
-    </div>
-
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
-                <img class="rounded-circle" style="width:60px" src="user.svg">
-            </a>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#">
-                    Thông tin tài khoản
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" onclick="logOut()">
-                    Đăng xuất
-                </a>
-            </div>
-        </li>
-    </ul>
-</nav>
-
 <script>
     if (!sessionStorage.getItem('token')) {
         location.href = 'login.html';
@@ -38,8 +14,32 @@
         location.href = 'login.html';
     }
 </script>
-
-<div id='app' class="mt-3 container">
+<div id='app'v-if="user.body.author_id">
+    <nav class="navbar navbar-expand-lg navbar-dark p-0" style="background-color: #1f282dd9">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="index_admin.html">Quản lý bài viết</a>
+            <a class="nav-item nav-link active" href="category_list.html">Quản lý nhóm bài viết</a>
+        </div>
+    
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                    <img v-if="user.body.author_photo" class="rounded-circle z-depth-2" style="width:70px" :src="API_URL+'/' + user.body.author_photo">
+                    <img v-else class="rounded-circle" style="width:60px" src="user.svg">
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="user_profile.html">
+                        Thông tin tài khoản
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" onclick="logOut()">
+                        Đăng xuất
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+<div class="mt-3 container">
     <template>
         <form id='fmt' @submit.prevent="save()">
             <table class="table">
@@ -53,11 +53,17 @@
         </form>
     </template>
 </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
     new Vue({
         el: '#app',
         data: {
+            user: {
+                    body:{
+                        author_photo:"",
+                        author_id:"",
+                    }},
             id: null,
             category: {
                 body: {
@@ -73,10 +79,22 @@
             if (this.id) {
                 var resp = await fetch(this.API_URL + "/root/get_category/" + this.id);
                 this.category = await resp.json();
-            }
+            };
+            await this.getUser();
         },
 
         methods: {
+            getUser: async function(){
+            var resp = await fetch(this.API_URL+"/root/get_user",
+                    {
+                        headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('token'), "Content-Type": "application/json",}
+                    });
+                    this.user = await resp.json();
+                    if(this.user.body.success === false){
+                        sessionStorage.removeItem('token');
+                        location.href = 'login.html';
+                    }
+          },
             post: async function (url, formData) {
                 var resp = await fetch(url, {
                     method: 'POST',

@@ -3,30 +3,6 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-<nav class="navbar navbar-expand-lg navbar-dark p-0" style="background-color: #1f282dd9">
-    <div class="navbar-nav">
-        <a class="nav-item nav-link active" href="index_admin.html">Quản lý bài viết</a>
-        <a class="nav-item nav-link" href="category_list.html">Quản lý nhóm bài viết</a>
-    </div>
-
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
-                <img class="rounded-circle" style="width:60px" src="user.svg">
-            </a>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#">
-                    Thông tin tài khoản
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" onclick="logOut()">
-                    Đăng xuất
-                </a>
-            </div>
-        </li>
-    </ul>
-</nav>
-
 <script>
     if (!sessionStorage.getItem('token')) {
         location.href = 'login.html';
@@ -42,7 +18,32 @@
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="plugin/tinymce/tinymce.min.js"></script>
 <script type="text/javascript" src="plugin/tinymce/init-tinymce.js"></script>
-<div id='app' class="container">
+
+<div id='app'>
+<nav class="navbar navbar-expand-lg navbar-dark p-0" style="background-color: #1f282dd9">
+    <div class="navbar-nav">
+        <a class="nav-item nav-link active" href="index_admin.html">Quản lý bài viết</a>
+        <a class="nav-item nav-link" href="category_list.html">Quản lý nhóm bài viết</a>
+    </div>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                <img v-if="user.body.author_photo" class="rounded-circle z-depth-2" style="width:70px" :src="API_URL+'/' + user.body.author_photo">
+                <img v-else class="rounded-circle" style="width:60px" src="user.svg">
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#">
+                    Thông tin tài khoản
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" onclick="logOut()">
+                    Đăng xuất
+                </a>
+            </div>
+        </li>
+    </ul>
+</nav>
+<div class="container">
     <form id='fmt'>
         <table class="table">
             <tr>
@@ -70,7 +71,7 @@
                 <td>
 
                     <select v-model='selected' multiple class="form-control">
-                        <option v-for="c in cate.body" style="width: 150px;" v-bind:value="c.id">{{ c.title }}</option>
+                        <option v-for="c in cate.body" style="width: 150px;" v-bind:value="c.id" name>{{ c.title }}</option>
                     </select>
 
                 </td>
@@ -85,6 +86,7 @@
             <button v-on:click='save()' class="btn btn-primary" type="button">Lưu lại</button>
         </div>
     </form>
+</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
@@ -105,8 +107,13 @@
                     sapo: "",
                     thumbnail: "",
                     title: "",
-                }
+                },
             },
+            user: {
+                body:{
+                    author_photo:"",
+                    author_id:""
+                }},
             API_URL: 'http://localhost:8000'
         },
         created: async function () {
@@ -144,7 +151,7 @@
                     });
                 var user = await user.json();
                 if (!user.body.author_id) {
-                    alert('Chưa điền đủ thông tin cá nhân');
+                    alert('Bạn hãy điền đủ thông tin cá nhân');
                     location.href = 'index_admin.html';
                 } else {
                     this.author = user.body.author_id
@@ -152,6 +159,7 @@
 
                 }
             }
+            await this.getUser()
         },
         methods: {
             post: async function (url, formData) {
@@ -204,6 +212,18 @@
                     alert('Lỗi xảy ra khi ghi dữ liệu');
                 }
             },
+            getUser: async function(){
+            var resp = await fetch(this.API_URL+"/root/get_user",
+                    {
+                        headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('token'), "Content-Type": "application/json",}
+                    });
+                    this.user = await resp.json()
+                    if(this.user.body.success === false){
+                        sessionStorage.removeItem('token');
+                        location.href = 'login.html';
+                    }
+          },
+            
         }
     })
 </script>

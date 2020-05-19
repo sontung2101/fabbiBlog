@@ -26,7 +26,7 @@ class CustomPagination(pagination.LimitOffsetPagination):
 
 
 class CustomPagination2(pagination.PageNumberPagination):
-    page_size = 4
+    page_size = 5
 
     def get_paginated_response(self, data):
         return Response({
@@ -34,8 +34,8 @@ class CustomPagination2(pagination.PageNumberPagination):
                 'previous': self.get_previous_link(),
                 'next': self.get_next_link(),
                 'count': self.page.paginator.count,
-                'page':self.page.number,
-                'num_page':self.page.paginator.num_pages,
+                'currentPage':self.page.number,
+                'total_page':self.page.paginator.num_pages,
             },
             'data': data
         })

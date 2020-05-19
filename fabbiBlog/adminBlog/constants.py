@@ -3,9 +3,9 @@ IN_PROGRESS = 'in_progress'
 CLOSED = 'closed'
 
 # ======GENDER==========
-OTHER = 'other'
-MALE = 'male'
-FEMALE = 'female'
+OTHER = 'Khác'
+MALE = 'Nam'
+FEMALE = 'Nữ'
 
 # ======LISTING STATUS ============
 DRAFT = 'draft'

@@ -1,31 +1,11 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.css">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="http://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+<link type="text/css" rel="stylesheet" href="http://unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+<link type="text/css" rel="stylesheet" href="http:unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"/>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-<nav class="navbar navbar-expand-lg navbar-dark p-0" style="background-color: #1f282dd9">
-    <div class="navbar-nav">
-        <a class="nav-item nav-link active" href="index_admin.html">Quản lý bài viết</a>
-        <a class="nav-item nav-link" href="category_list.html">Quản lý nhóm bài viết</a>
-    </div>
-
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
-                <img class="rounded-circle" style="width:60px" src="user.svg">
-            </a>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#">
-                    Thông tin tài khoản
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" onclick="logOut()">
-                    Đăng xuất
-                </a>
-            </div>
-        </li>
-    </ul>
-</nav>
 
 <script>
     if (!sessionStorage.getItem('token')) {
@@ -37,8 +17,31 @@
         location.href = 'login.html';
     }
 </script>
-
-<div id='app' class="mt-3 container">
+    <div id = 'app' v-if="user.body.author_id">
+<nav class="navbar navbar-expand-lg navbar-dark p-0" style="background-color: #1f282dd9">
+    <div class="navbar-nav">
+        <a class="nav-item nav-link active" href="index_admin.html">Quản lý bài viết</a>
+        <a class="nav-item nav-link" href="category_list.html">Quản lý nhóm bài viết</a>
+    </div>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                <img v-if="user.body.author_photo" class="rounded-circle z-depth-2" style="width:70px" :src="API_URL+'/' + user.body.author_photo">
+                <img v-else class="rounded-circle" style="width:60px" src="user.svg">
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="user_profile.html">
+                    Thông tin tài khoản
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" onclick="logOut()">
+                    Đăng xuất
+                </a>
+            </div>
+        </li>
+    </ul>
+</nav>
+<div  class="mt-3 container">
     <template>
         <a class="btn btn-primary" href="create_update_post.html" style="margin-bottom: 5px;">
             Thêm bài viết
@@ -64,69 +67,64 @@
                 </td>
             </tr>
         </table>
-        <nav v-if="paging.num_page > 1 " aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link" v-if="paging.page === 1" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                      <span class="sr-only">Previous</span>
-                  </a>
-                  <a class="page-link" v-else v-on:click="getListPosts(start)" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                </li>
-                <li class="page-item"><a class="page-link" v-if="paging.previous" v-on:click="getListPosts(paging.previous)" ><span aria-hidden="true">&lsaquo;</span></a>
-                  <a class="page-link" v-else ><span aria-hidden="true">&lsaquo;</span></a></li>
-                <li class="page-item"><a class="page-link" v-if="paging.next" v-on:click="getListPosts(paging.next)" ><span aria-hidden="true">&rsaquo;</span></a>
-                  <a class="page-link" v-else ><span aria-hidden="true">&rsaquo;</span></a></li>
-                <li class="page-item">
-                    <!-- <a class="page-link" v-if="paging." v-on:click="getListPosts(end)" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a> -->
-                    <a class="page-link" aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
-                      <span class="sr-only">Next</span>
-                  </a>
-                </li>
-            </ul>
-        </nav>
+        <b-pagination v-model="paging.currentPage" :total-rows="paging.count" :per-page="perPage"
+                      v-on:input="getListPosts(url2+paging.currentPage)">
+        </b-pagination>
+        <p class="mt-3">Trang hiện tại: {{ paging.currentPage }}</p>
     </template>
-
+</div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 <script>
     new Vue({
         el: '#app',
-        data: {
-            start:'http://localhost:8000/root/get_post_list',
-            end:'',
-            posts: [],
-            API_URL: 'http://localhost:8000',
-            paging: {
-                previous: '',
-                next: '',
-                count: '',
-                page: '',
-                num_page: '',
-            },
+        data() {
+            return {
+                perPage: 5,
+                paging: {
+                    currentPage: "1",
+                    count: "",
+                    previous: "",
+                    next: "",
+                    total_page: "",
+                },
+                posts: [],
+                API_URL: 'http://localhost:8000',
+                url: "http://localhost:8000/root/get_post_list",
+                url2: "http://localhost:8000/root/get_post_list?page=",
+                user: {
+                    body:{
+                        author_photo:"",
+                        author_id:"",
+                    }}
+            }
         },
         created: async function () {
-            await this.getListPosts(this.start);
+            await this.getListPosts(this.url);
+            await this.getUser()
+    
         },
         methods: {
+            getUser: async function(){
+            var resp = await fetch(this.API_URL+"/root/get_user",
+                    {
+                        headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('token'), "Content-Type": "application/json",}
+                    });
+                    this.user = await resp.json();
+                    if(this.user.body.success === false){
+                        sessionStorage.removeItem('token');
+                        location.href = 'login.html';
+                    }
+          },
             getListPosts: async function (url) {
                 var resp = await fetch(url,
                     {
                         headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('token')}
                     });
                 this.posts = await resp.json();
-                this.paging = this.posts.paging;
-                console.log(this.paging.page)
-                this.end= this.start+'?page='+this.paging.num_page
+                this.paging = this.posts.paging
+                this.url = this.url2 + this.paging.currentPage
             },
             deleteCategory: async function (id) {
                 if (confirm("Bạn có thực sự muốn xóa !")) {
@@ -143,8 +141,7 @@
                 }
                 ;
             }
-        }
-
+        },
 
     })
 </script>

@@ -1,0 +1,104 @@
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    if (!sessionStorage.getItem('token')) {
+        location.href = 'login.html';
+    }
+
+    function logOut() {
+        sessionStorage.removeItem('token');
+        location.href = 'login.html';
+    }
+</script>
+<div id='app'>
+<nav class="navbar navbar-expand-lg navbar-dark p-0" style="background-color: #1f282dd9">
+    <div class="navbar-nav">
+        <a class="nav-item nav-link" href="index_admin.html">Quản lý bài viết</a>
+        <a class="nav-item nav-link" href="category_list.html">Quản lý nhóm bài viết</a>
+    </div>
+
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                <img v-if="user.body.author_photo" class="rounded-circle z-depth-2" style="width:70px" :src="API_URL+'/' + user.body.author_photo">
+                <img v-else class="rounded-circle" style="width:60px" src="user.svg">
+
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="user_profile.html">
+                    Thông tin tài khoản
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" onclick="logOut()">
+                    Đăng xuất
+                </a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+<div class="mt-3 container">
+    <template>
+     
+          <a class="btn btn-primary" href="create_update_user_profile.html" style="margin-bottom: 5px;">
+            sửa thông tin 
+          </a>
+      <table class="table table-bordered">
+        <tr class="text-center">
+          <th>Tên tài khoản</th>
+          <th>Email đăng nhập</th>
+          <th>Ảnh đại diện</th>
+          <th>Địa chỉ</th>
+          <th>Giới tính</th>
+          <th>SĐT</th>
+        </tr>
+        <tr class="text-center">
+          <td>{{user.body.author_name}}</td>
+          <td>{{user.body.author_email}}</td>
+          <td><img v-if="user.body.author_photo" :src="API_URL+'/' + user.body.author_photo" class="product-image" style="width: 200px;"/><img v-else class="rounded-circle" style="width:60px" src="user.svg"></td>
+          <td>{{user.body.author_add}}</td>
+          <td>{{user.body.author_gender}}</td>
+          <td>{{user.body.author_phone}}</td>
+        </tr>
+      </table>
+    </template>
+  </div>
+</div> 
+<script>
+    new Vue({
+      el: '#app',
+      data: { 
+          user: {
+              body:{
+                  author_name:"",
+                  author_email:"",
+                  author_add:"",
+                  author_photo:"",
+                  author_phone:"",
+                  author_gender:"",
+                  author_id:"",
+              }}
+          ,
+          API_URL: 'http://localhost:8000',
+         },
+      created: async function () {
+          await this.getUser()
+      },
+      methods:{
+          getUser: async function(){
+            var resp = await fetch(this.API_URL+"/root/get_user",
+                    {
+                        headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('token'), "Content-Type": "application/json",}
+                    });
+                    this.user = await resp.json();
+                    if(this.user.body.success === false){
+                        sessionStorage.removeItem('token');
+                        location.href = 'login.html';
+                    }
+          }
+      }
+    })
+  </script>

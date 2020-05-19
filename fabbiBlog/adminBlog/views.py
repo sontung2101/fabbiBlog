@@ -35,6 +35,7 @@ def createUser(request):
     else:
         return Response({'success': False, 'errors': errors})
 
+
 class PostListAPIView(ListAPIView):
     queryset = PostModel.objects.all().order_by('-created_at')
     serializer_class = GetAllPostSerializer
@@ -83,14 +84,25 @@ def getAllCategories(request):
 @permission_classes([IsAuthenticated])
 def getUser(request):
     id = request.user.id
-    author = UserProfile.objects.get(user_id=id)
-    if author:
+    username = request.user.username
+    email = request.user.email
+    try:
+        author = UserProfile.objects.get(user_id=id)
+        photo = str(author.photo)
+        add = author.address
+        gender = author.gender
+        phone = author.phone
         data = {
             'author_id': author.id,
-            'author_name': request.user.username
+            'author_name': username,
+            'author_email': email,
+            'author_photo': photo,
+            'author_add': add,
+            'author_gender': gender,
+            'author_phone': phone,
         }
         return Response(data)
-    else:
+    except Exception as e:
         return Response({"success": False})
 
 
@@ -121,6 +133,10 @@ def reset_password(request):
 
 
 # ------------------------------------Categories--------------------------------------------
+class CategoryListAPIView(ListAPIView):
+    queryset = CategoryModel.objects.all().order_by('-id')
+    serializer_class = CategorySerializer
+    pagination_class = paginations.CustomPagination2
 
 
 @api_view(['GET'])
@@ -156,3 +172,4 @@ def deleteCategory(request, id):
     category = CategoryModel.objects.get(id=id)
     category.delete()
     return Response({'success': True})
+# ---------------------------UserProfile----------------------------------
