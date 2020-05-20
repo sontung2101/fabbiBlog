@@ -20,7 +20,9 @@ urlpatterns = [
     path('create_category', createCategory, name='create-category'),
     path('update_category/<int:id>', updateCategory, name='update-category'),
     path('delete_category/<int:id>', deleteCategory, name='delete-category'),
-    path('list_categories', CategoryListAPIView.as_view(), name='list-categories')
+    path('list_categories', CategoryListAPIView.as_view(), name='list-categories'),
     # --------------------userprofile------------------------------
+    path('update_userprofile/<int:id>', updateProfile, name='update-user-profile'),
+    path('change_password',UpdatePasswordAPIView.as_view(),name='change-password'),
 
 ]

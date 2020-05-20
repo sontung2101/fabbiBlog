@@ -10,6 +10,8 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from utils import paginations
 from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 # Create your views here.
@@ -40,6 +42,8 @@ class PostListAPIView(ListAPIView):
     queryset = PostModel.objects.all().order_by('-created_at')
     serializer_class = GetAllPostSerializer
     pagination_class = paginations.CustomPagination2
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ('title', 'author__user__username')
 
 
 @api_view(['GET'])
@@ -172,4 +176,40 @@ def deleteCategory(request, id):
     category = CategoryModel.objects.get(id=id)
     category.delete()
     return Response({'success': True})
+
+
 # ---------------------------UserProfile----------------------------------
+
+@api_view(['PUT'])
+def updateProfile(request, id):
+    profile = UserProfile.objects.get(id=id)
+    serializer = UserProfileSerializer(data=request.data, instance=profile)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'success': True})
+    else:
+        return Response({'success': False, 'errors': serializer.errors})
+
+
+class UpdatePasswordAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self, querryset=None):
+        return self.request.user
+
+    def put(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # Check old password
+            old_password = serializer.data.get("old_password")
+            if not self.object.check_password(old_password):
+                return Response({"old_password": ["Wrong password."]},
+                                status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            return Response({'success': True})
+
+        return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

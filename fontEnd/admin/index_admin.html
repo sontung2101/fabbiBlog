@@ -26,12 +26,15 @@
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
-                <img v-if="user.body.author_photo" class="rounded-circle z-depth-2" style="width:70px" :src="API_URL+'/' + user.body.author_photo">
+                <img v-if="user.body.author_photo" class="rounded-circle z-depth-2" style="width:60px;height: 60px;" :src="API_URL+'/' + user.body.author_photo">
                 <img v-else class="rounded-circle" style="width:60px" src="user.svg">
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="user_profile.html">
                     Thông tin tài khoản
+                </a>
+                <a class="dropdown-item" href="change_password.html">
+                    Đổi mật khẩu
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" onclick="logOut()">
@@ -43,9 +46,15 @@
 </nav>
 <div  class="mt-3 container">
     <template>
-        <a class="btn btn-primary" href="create_update_post.html" style="margin-bottom: 5px;">
+        <div >
+        <a class="btn btn-primary" href="create_update_post.html" style="margin-bottom: 5px;width: 329px;;margin-right: 10px;">
             Thêm bài viết
         </a>
+        <form id='seh' @submit.prevent="search()">
+        <input class="form-control" v-model="keyword" type="text" placeholder="Tìm kiếm" aria-label="Search" style="width: 40%;margin-right: 10px;float: left;">
+        </form>
+        <p class="h5 text-right">{{paging.count}} bài viết</p>
+    </div>
         <table class="table table-bordered">
             <tr class="text-center">
                 <th style="width: 10%;">STT</th>
@@ -81,6 +90,7 @@
         el: '#app',
         data() {
             return {
+                keyword:'',
                 perPage: 5,
                 paging: {
                     currentPage: "1",
@@ -140,7 +150,12 @@
                     ;
                 }
                 ;
-            }
+            },
+            search:async function(){
+              var url = this.API_URL + "/root/get_post_list?search="+encodeURI(this.keyword);
+                console.log(url);
+                await this.getListPosts(url);
+            },
         },
 
     })

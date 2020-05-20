@@ -68,3 +68,5 @@ class CustomPagination2(pagination.PageNumberPagination):
 
         self.request = request
         return list(self.page)
+class CustomPagination3(CustomPagination2):
+    page_size = 3

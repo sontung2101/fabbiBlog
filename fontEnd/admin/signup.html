@@ -72,7 +72,6 @@
           alert('Mật khẩu xác thực không khớp');
           return;
         }
-
         var params = { username: this.username,email:this.email, password: this.password };
         var result = await this.post(this.API_URL+'root/create_user',
           params);

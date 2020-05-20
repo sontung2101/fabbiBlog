@@ -17,8 +17,8 @@ REST_FRAMEWORK = {
         'utils.renderers.EmberJSONRenderer',
     ),
     #setting basic
-    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
-    'DATE_FORMAT': '%Y-%m-%d',
+    'DATETIME_FORMAT': '%d-%m-%Y %H:%M:%S',
+    'DATE_FORMAT': '%d-%m-%Y',
     'TIME_FORMAT': '%H:%M:%S',
     'EXCEPTION_HANDLER': 'utils.error.custom_exception_handler',
     'DEFAULT_PAGINATION_CLASS': 'utils.paginations.CustomPagination',

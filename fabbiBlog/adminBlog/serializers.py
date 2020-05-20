@@ -3,7 +3,8 @@ from rest_framework import serializers
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 from home.models import *
-import json
+from django.contrib.auth.password_validation import validate_password
+
 
 class CategorySerializer(ModelSerializer):
     class Meta:
@@ -49,7 +50,6 @@ class PostSerializer(ModelSerializer):
             posts.categories.add(cate)
         return posts
 
-    #
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
         instance.author = validated_data.get('author', instance.author)
@@ -62,3 +62,26 @@ class PostSerializer(ModelSerializer):
         for cate_id in categories:
             instance.categories.add(CategoryModel.objects.get(id=cate_id))
         return instance
+
+
+class MyUserSerialiser(ModelSerializer):
+    class Meta:
+        model = myUser
+        fields = '__all__'
+
+
+class UserProfileSerializer(ModelSerializer):
+    user = MyUserSerialiser(read_only=True)
+
+    class Meta:
+        model = UserProfile
+        fields = '__all__'
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
