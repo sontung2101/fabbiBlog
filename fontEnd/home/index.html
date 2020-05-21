@@ -6,7 +6,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Django Blog</title>
+  <title>PyDjango Blog</title>
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -21,7 +21,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Django Blog</a>
+      <a class="navbar-brand" href="#">PyDjango Blog</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -60,7 +60,7 @@
 
         <!-- Blog Post -->
         <div class="card mb-4" v-for='p in posts.body'>
-          <img class="card-img-top" :src="p.thumbnail" style="height: 400px;" alt="Card image cap">
+          <img class="card-img-top" :src="p.thumbnail" style="max-height: 400px;" alt="Card image cap">
           <div class="card-body">
             <h2 class="card-title">{{p.title}}</h2>
             <p class="card-text">{{p.sapo}}</p>
@@ -68,12 +68,12 @@
           </div>
           <div class="card-footer text-muted">
             Posted on {{p.created_at}} by
-            <a href="#">{{p.author.user.username}}</a>
+            <a href="#" >{{p.author.user.username}}</a>
           </div>
         </div>
 
         <!-- Pagination -->
-        <ul class="pagination justify-content-center mb-4">
+        <ul class="pagination justify-content-center mb-4" v-if='paging.count > 0'>
           <li v-if="paging.previous" class="page-item">
             <a class="page-link"  v-on:click="getListPosts(paging.previous)">&larr; Older</a>
           </li>
@@ -87,7 +87,8 @@
             <a class="page-link">Newer &rarr;</a>
           </li>
         </ul>
-        <p class="mt-3 text-muted container text-center">Current Page: {{ paging.currentPage }} of {{paging.total_page}}</p>
+        <p class="mt-3 text-muted container text-center" v-if='paging.count > 0'>Current Page: {{ paging.currentPage }} of {{paging.total_page}}</p>
+        <p v-else class="mt-10 container text-center">Not Found 404</p>
       </div>
 
       <!-- Sidebar Widgets Column -->
@@ -98,9 +99,11 @@
           <h5 class="card-header">Search</h5>
           <div class="card-body">
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search for...">
+              <form @submit.prevent='search()' >
+              <input type="text" class="form-control" v-model="keyword" placeholder="Search for...">
+            </form>
               <span class="input-group-btn">
-                <button class="btn btn-secondary" type="button">Go!</button>
+                <button class="btn btn-secondary ml-1" style="width: 80px;" v-on:click="search()" type="button">Go!</button>
               </span>
             </div>
           </div>
@@ -113,27 +116,15 @@
             <div class="row">
               <div class="col-lg-6">
                 <ul class="list-unstyled mb-0">
-                  <li>
-                    <a href="#">Web Design</a>
-                  </li>
-                  <li>
-                    <a href="#">HTML</a>
-                  </li>
-                  <li>
-                    <a href="#">Freebies</a>
+                  <li v-for='c in categories.body.cate' class="disabled">
+                    <a href="#" class="btn btn-link" style="display: unset;" @click.prevent="keyword =c.title" v-on:click="search()" >{{c.title}}</a>
                   </li>
                 </ul>
               </div>
               <div class="col-lg-6">
                 <ul class="list-unstyled mb-0">
-                  <li>
-                    <a href="#">JavaScript</a>
-                  </li>
-                  <li>
-                    <a href="#">CSS</a>
-                  </li>
-                  <li>
-                    <a href="#">Tutorials</a>
+                  <li v-for='c in categories.body.cate2' >
+                    <a href="#" class="btn btn-link" style="display: unset;"  @click.prevent="keyword =c.title" v-on:click="search()" >{{c.title}}</a>
                   </li>
                 </ul>
               </div>
@@ -145,7 +136,7 @@
         <div class="card my-4">
           <h5 class="card-header">Side Widget</h5>
           <div class="card-body">
-            Wellcome to Just Django Blog.<br>We have {{paging.count}} Posts for you .<br>Ready to become a professional Django developer?
+            Wellcome to PyDjango Blog.<br>We have <label style="color: red;margin-bottom: 0px;" >{{paging.count}}</label> posts for you .<br>Ready to become a professional Django developer?
           </div>
         </div>
 
@@ -176,8 +167,15 @@
     el:'#app',
     data(){
       return{
+        categories:{ 
+            body:{
+              cate:[],
+              cate2:[]
+              }
+              
+        },
         keyword:'',
-        perPage: 5,
+        perPage: 3,
         paging: {
             currentPage: "1",
             count: "",
@@ -185,21 +183,46 @@
             next: "",
             total_page: "",
         },
+
         posts: [],
         API_URL:'http://localhost:8000'
       };
     },
     created: async function(){
-      await this.getListPosts(this.API_URL)
+      await this.getListPosts(this.API_URL);
+      await this.getCategories();
+      var pos = location.href.lastIndexOf("?key=");
+      if (pos>=0){
+        var key = location.href.substring(pos+5);
+        this.keyword = key
+        await this.search()
+      }
     },
     methods:{
       getListPosts: async function (url) {
                 var resp = await fetch(url,);
                 this.posts = await resp.json();
                 this.paging = this.posts.paging;
+                // console.log(this.posts)
                 window.scrollTo(0,0);
             },
+      search:async function(){
+        var url = this.API_URL + "?search="+encodeURI(this.keyword);
+          await this.getListPosts(url);
+          window.scrollTo(0,0);
+      },
+      getCategories:async function(){
+        var resp = await fetch(this.API_URL+'/get_categories')
+        this.categories = await resp.json()
+        // console.log(this.categories)
+      }
+
     
     },
   })
+</script>
+<script>
+  $(document).ready(function() {
+    $("input:text").focus(function() { $(this).select(); } );
+});
 </script>

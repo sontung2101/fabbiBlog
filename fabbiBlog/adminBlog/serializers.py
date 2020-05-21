@@ -20,7 +20,6 @@ class GetPostSerializer(ModelSerializer):
 
 class GetAllPostSerializer(ModelSerializer):
     categories = CategorySerializer(many=True, read_only=True)
-
     class Meta:
         model = PostModel
         fields = '__all__'

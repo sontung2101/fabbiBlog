@@ -77,7 +77,7 @@ def createPost(requeset):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated]) #NotPet
 def getAllCategories(request):
     categories = CategoryModel.objects.all()
     serializer = CategorySerializer(categories, many=True)
