@@ -13,10 +13,6 @@ def index(request):
     return HttpResponse("homepage")
 
 
-def post(request):
-    pass
-
-
 class homePageListAPIView(PostListAPIView):
     serializer_class = GetAllPostSerializerUser
     pagination_class = paginations.CustomPagination3
@@ -41,4 +37,4 @@ def getPost(request, id):
         serializer = GetAllPostSerializerUser(post)
         return Response(serializer.data)
     except Exception:
-        return Response({'success':False})
+        return Response({'success': False})

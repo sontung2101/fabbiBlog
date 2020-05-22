@@ -20,9 +20,14 @@ tinymce.init({
 	],
 
 	/* toolbar */
-	toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons",
-	
+	toolbar: "sizeselect | bold italic | fontselect |insertfile undo redo | styleselect |alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons|  fontsizeselect",
+	fontsize_formats: "8pt 10pt 12pt 14pt 18pt 24pt 36pt",
 	/* style */
+	image_class_list: [
+    {title: 'None', value: ''},
+    {title: 'img-thumbnail', value: 'img-thumbnail'},
+    {title: 'img-fluid rounded', value: 'img-fluid rounded'},
+],
 	style_formats: [
 		{title: "Headers", items: [
 			{title: "Header 1", format: "h1"},

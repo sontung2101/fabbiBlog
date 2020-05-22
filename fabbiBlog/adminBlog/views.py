@@ -213,3 +213,26 @@ class UpdatePasswordAPIView(APIView):
             return Response({'success': True})
 
         return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ---------------------------------uploadmedia-----------------------------------
+class GetListMediaListAPIView(ListAPIView):
+    queryset = UploadModel.objects.all().order_by('-id')
+    serializer_class = UploadSerializer
+    pagination_class = paginations.CustomPagination2
+
+
+@api_view(['POST'])
+def CreateMedia(request):
+    serializers = UploadSerializer(data=request.data)
+    if serializers.is_valid():
+        serializers.save()
+        return Response({'success': True})
+    else:
+        return Response({'success': False, 'errors': serializers.errors})
+
+@api_view(['DELETE'])
+def deleteMedia(request,id):
+    img = UploadModel.objects.get(id=id)
+    img.delete()
+    return Response({'success': True})

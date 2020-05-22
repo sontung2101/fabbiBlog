@@ -4,6 +4,7 @@ from adminBlog.models import *
 from tinymce.models import HTMLField
 from adminBlog.models import *
 
+
 class CategoryModel(models.Model):
     title = models.CharField(max_length=50, unique=True)
 
@@ -16,11 +17,11 @@ class CategoryModel(models.Model):
 
 class PostModel(models.Model):
     title = models.CharField(max_length=100, unique=True)
-    sapo = models.CharField(max_length=200,blank=True)
+    sapo = models.CharField(max_length=200, blank=True)
     content = HTMLField()
-    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE,related_name='author')
+    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='author')
     thumbnail = models.ImageField(upload_to='uploads', blank=True)
-    categories = models.ManyToManyField(CategoryModel,blank=True)
+    categories = models.ManyToManyField(CategoryModel, blank=True)
     is_active = models.BooleanField(null=True, blank=True, default=True)
     is_deleted = models.BooleanField(null=True, blank=True, default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -35,7 +36,7 @@ class PostModel(models.Model):
 
 class CommentsModel(models.Model):
     user = models.ForeignKey(myUser, on_delete=models.CASCADE)
-    content = models.CharField(max_length=100,blank=True)
+    content = models.CharField(max_length=100, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(PostModel, related_name='comments', on_delete=models.CASCADE)
     is_active = models.BooleanField(null=True, blank=True, default=True)
@@ -46,3 +47,11 @@ class CommentsModel(models.Model):
 
     def __str__(self):
         return self.user
+
+
+class UploadModel(models.Model):
+    # post = models.ForeignKey(PostModel, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='medias')
+
+    def __str__(self):
+        return str(self.id)

@@ -20,5 +20,6 @@ class CommentsAdmin(admin.ModelAdmin):
     readonly_fields = ['is_active', 'is_deleted']
 
 admin.site.register(CategoryModel)
+admin.site.register(UploadModel)
 admin.site.register(PostModel, PostAdmin)
 admin.site.register(CommentsModel,CommentsAdmin)

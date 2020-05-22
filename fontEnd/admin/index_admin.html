@@ -22,6 +22,7 @@
     <div class="navbar-nav">
         <a class="nav-item nav-link active" href="index_admin.html">Quản lý bài viết</a>
         <a class="nav-item nav-link" href="category_list.html">Quản lý nhóm bài viết</a>
+        <a class="nav-item nav-link" href="media.html">Quản lý ảnh bài viết</a>
     </div>
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown no-arrow">
@@ -125,6 +126,7 @@
                     if(this.user.body.success === false){
                         sessionStorage.removeItem('token');
                         location.href = 'login.html';
+                        alert('Tài khoản không được phép truy cập vui lòng liên hệ admin để được hỗ trợ')
                     }
           },
             getListPosts: async function (url) {

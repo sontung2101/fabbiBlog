@@ -20,6 +20,7 @@ class GetPostSerializer(ModelSerializer):
 
 class GetAllPostSerializer(ModelSerializer):
     categories = CategorySerializer(many=True, read_only=True)
+
     class Meta:
         model = PostModel
         fields = '__all__'
@@ -84,3 +85,9 @@ class ChangePasswordSerializer(serializers.Serializer):
     def validate_new_password(self, value):
         validate_password(value)
         return value
+
+
+class UploadSerializer(ModelSerializer):
+    class Meta:
+        model = UploadModel
+        fields = '__all__'

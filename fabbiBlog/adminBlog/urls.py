@@ -23,6 +23,9 @@ urlpatterns = [
     path('list_categories', CategoryListAPIView.as_view(), name='list-categories'),
     # --------------------userprofile------------------------------
     path('update_userprofile/<int:id>', updateProfile, name='update-user-profile'),
-    path('change_password',UpdatePasswordAPIView.as_view(),name='change-password'),
-
+    path('change_password', UpdatePasswordAPIView.as_view(), name='change-password'),
+    # --------------------upload----------------------------------
+    path('get_list_media', GetListMediaListAPIView.as_view(), name='upload-img'),
+    path('create_media',CreateMedia,name='create-media'),
+    path('delete_media/<int:id>',deleteMedia,name='delete-media'),
 ]
