@@ -6,3 +6,16 @@
 body {
   padding-top: 56px;
 }
+/*.container img {*/
+/*  max-width:100%;*/
+/*  height:auto;*/
+/*}*/
+/*img.img-thumbnail {*/
+/*    width: 100% !important;*/
+/*	max-width:100% !important;*/
+/*	height:auto !important;*/
+/*}*/
+.test{
+  max-width: 100%!important;
+  height: auto;
+}

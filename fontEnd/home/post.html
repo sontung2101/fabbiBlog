@@ -15,7 +15,6 @@
 
   <!-- Custom styles for this template -->
   <link href="css/blog-post.css" rel="stylesheet">
-
 </head>
 
 <body>
@@ -79,8 +78,10 @@
 
         <!-- Post Content -->
         <p class="lead" >{{post.body.sapo}}</p>
-         <div class="container"> 
-        <iframe  :srcdoc="post.body.content" onload="this.style.height=(this.contentWindow.document.body.scrollHeight+20)+'px';" frameborder="0" style="overflow:scroll; width: 100%"  marginheight="1" marginwidth="1" name="cboxmain" id="cboxmain" seamless="seamless" scrolling="no" frameborder="0" allowtransparency="true"></iframe>
+        <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12"> 
+          <iframe  :srcdoc="post.body.content" onload="this.style.height=(this.contentWindow.document.body.scrollHeight+20)+'px';" frameborder="0" style="overflow:scroll; width: 100%;"  marginheight="1" marginwidth="1" name="cboxmain" id="cboxmain" seamless="seamless" scrolling="no" frameborder="0" allowtransparency="true"></iframe>
+        </div>
         </div>
         <!-- Comments Form -->
         <div class="card my-4">

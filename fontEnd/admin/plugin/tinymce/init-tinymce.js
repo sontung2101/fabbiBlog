@@ -4,14 +4,15 @@ tinymce.init({
 	/* theme of the editor */
 	theme: "modern",
 	skin: "lightgray",
-	
 	/* width and height of the editor */
 	width: "100%",
 	height: 600,
-	
+	image_advtab: true,
+
 	/* display statusbar */
 	statubar: true,
-	
+	// image_dimensions: false,
+	// content_style:'.test{max-width: 100%!important;height: auto!important;}',
 	/* plugin */
 	plugins: [
 		"advlist autolink link image lists charmap print preview hr anchor pagebreak",
@@ -25,8 +26,7 @@ tinymce.init({
 	/* style */
 	image_class_list: [
     {title: 'None', value: ''},
-    {title: 'img-thumbnail', value: 'img-thumbnail'},
-    {title: 'img-fluid rounded', value: 'img-fluid rounded'},
+    {title: 'img-thumbnail', value: 'test'},
 ],
 	style_formats: [
 		{title: "Headers", items: [
